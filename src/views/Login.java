@@ -4,8 +4,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import control.ConexaoDB;
+import factory.ConnectionFactory;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -84,11 +83,14 @@ public class Login extends JFrame {
 		btnLogin.setIcon(new ImageIcon(Login.class.getResource("/imagens/perfil-do-usuario.png")));
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				String user = txtusuario.getText();
 				char[] password = txtSenha.getPassword();
 
-				if (ConexaoDB.conector(user, password) != null) {
+				String user = txtusuario.getText();
+				String password_user = new String(password);
+
+				ConnectionFactory conexao = new ConnectionFactory();
+
+				if (conexao.login(user, password_user)) {
 					MenuUsuario usuario = new MenuUsuario();
 					usuario.setVisible(true);
 					dispose();

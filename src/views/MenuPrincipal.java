@@ -79,7 +79,7 @@ public class MenuPrincipal extends JFrame {
 		JLabel lblNewLabel_1 = new JLabel("Login");
 		lblNewLabel_1.setForeground(new Color(12, 138, 199));
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 16));
-		lblNewLabel_1.setBounds(777, 213, 44, 24);
+		lblNewLabel_1.setBounds(775, 195, 64, 64);
 		panel.add(lblNewLabel_1);
 
 		JLabel lblNewLabel_2 = new JLabel("");
@@ -107,7 +107,6 @@ public class MenuPrincipal extends JFrame {
 						JOptionPane.QUESTION_MESSAGE, null, opcao, "Aceitar");
 				if (escolha == JOptionPane.YES_OPTION) {
 					System.exit(0);
-				} else {
 				}
 			}
 		});

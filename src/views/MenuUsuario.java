@@ -1,10 +1,12 @@
 package views;
 
-
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+//import controller.ConexaoDB;
+
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -48,17 +50,17 @@ public class MenuUsuario extends JFrame {
 		contentPane.setLayout(null);
 		setResizable(false);
 		setLocationRelativeTo(null);
-		
+
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setIcon(new ImageIcon(MenuUsuario.class.getResource("/imagens/menu-img.png")));
 		lblNewLabel.setBounds(-56, 0, 741, 471);
 		contentPane.add(lblNewLabel);
-		
+
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(MenuUsuario.class.getResource("/imagens/Ha-100px.png")));
 		lblNewLabel_2.setBounds(724, 32, 104, 107);
 		contentPane.add(lblNewLabel_2);
-		
+
 		JButton btnReserva = new JButton("");
 		btnReserva.setIcon(new ImageIcon(MenuUsuario.class.getResource("/imagens/reservas.png")));
 		btnReserva.addActionListener(new ActionListener() {
@@ -72,12 +74,13 @@ public class MenuUsuario extends JFrame {
 		btnReserva.setBackground(Color.WHITE);
 		btnReserva.setBounds(741, 186, 71, 73);
 		contentPane.add(btnReserva);
-		
+
 		JButton btnSair = new JButton("");
 		btnSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MenuPrincipal principal = new MenuPrincipal();
 				principal.setVisible(true);
+				// ConexaoDB.closeConnection();
 				dispose();
 			}
 		});
@@ -86,19 +89,19 @@ public class MenuUsuario extends JFrame {
 		btnSair.setBackground(Color.WHITE);
 		btnSair.setBounds(823, 411, 50, 47);
 		contentPane.add(btnSair);
-		
+
 		JLabel lblNewLabel_1_1 = new JLabel("Reservas");
 		lblNewLabel_1_1.setForeground(new Color(12, 138, 199));
 		lblNewLabel_1_1.setFont(new Font("Arial", Font.BOLD, 16));
 		lblNewLabel_1_1.setBounds(741, 163, 80, 17);
 		contentPane.add(lblNewLabel_1_1);
-		
+
 		JLabel lblNewLabel_1_1_1 = new JLabel("Buscar");
 		lblNewLabel_1_1_1.setForeground(new Color(12, 138, 199));
 		lblNewLabel_1_1_1.setFont(new Font("Arial", Font.BOLD, 16));
 		lblNewLabel_1_1_1.setBounds(741, 274, 77, 17);
 		contentPane.add(lblNewLabel_1_1_1);
-		
+
 		JButton btnBuscar = new JButton("");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

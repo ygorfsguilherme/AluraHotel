@@ -1,35 +1,44 @@
 package views;
 
-
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.SystemColor;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
+
+import controller.ReservasController;
+import model.ReservasModelo;
+
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JPopupMenu;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 
-
-
 @SuppressWarnings("serial")
 public class Reservas extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField Valor;
+	private static JTextField Valor = new JTextField();
+
+	static JDateChooser FechaE = new JDateChooser();
+	static JDateChooser FechaS = new JDateChooser();
 
 	/**
 	 * Launch the application.
@@ -62,107 +71,185 @@ public class Reservas extends JFrame {
 		contentPane.setLayout(null);
 		setResizable(false);
 		setLocationRelativeTo(null);
-		
+
 		JPanel panel = new JPanel();
-		panel.setBackground(new Color(245,245,245));
+		panel.setBackground(new Color(245, 245, 245));
 		panel.setBounds(0, 0, 900, 502);
 		contentPane.add(panel);
 		panel.setLayout(null);
-		
-		JDateChooser FechaE = new JDateChooser();
+
 		FechaE.setBounds(88, 166, 235, 33);
 		panel.add(FechaE);
-		
+		FechaE.getDateEditor().addPropertyChangeListener(
+				new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent e) {
+						CalcularHospedagem();
+					}
+				});
+
 		JLabel lblNewLabel_1 = new JLabel("Data de Check In");
 		lblNewLabel_1.setBounds(88, 142, 133, 14);
 		lblNewLabel_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.add(lblNewLabel_1);
-		
+
 		JLabel lblNewLabel_1_1 = new JLabel("Data de Check Out");
 		lblNewLabel_1_1.setBounds(88, 210, 133, 14);
 		lblNewLabel_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.add(lblNewLabel_1_1);
-		
-		JDateChooser FechaS = new JDateChooser();
+
 		FechaS.setBounds(88, 234, 235, 33);
 		FechaS.getCalendarButton().setBackground(Color.WHITE);
 		panel.add(FechaS);
-		
-		Valor = new JTextField();
+		FechaS.getDateEditor().addPropertyChangeListener(
+				new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent e) {
+						CalcularHospedagem();
+					}
+				});
+
+		// Valor JTextField
 		Valor.setBounds(88, 303, 235, 33);
 		Valor.setEnabled(false);
 		panel.add(Valor);
 		Valor.setColumns(10);
-		
+
 		JLabel lblNewLabel_1_1_1 = new JLabel("Valor da Reserva");
 		lblNewLabel_1_1_1.setBounds(88, 278, 133, 14);
 		lblNewLabel_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.add(lblNewLabel_1_1_1);
-		
-		JComboBox FormaPago = new JComboBox();
+
+		JComboBox<String> FormaPago = new JComboBox<>();
 		FormaPago.setBounds(88, 373, 235, 33);
 		FormaPago.setFont(new Font("Arial", Font.PLAIN, 14));
-		FormaPago.setModel(new DefaultComboBoxModel(new String[] {"Cartão de Crédito", "Cartão de Débito", "Boleto"}));
+		FormaPago.setModel(new DefaultComboBoxModel(new String[] { "Selecione", "Dinheiro", "Cartão de Crédito",
+				"Cartão de Débito" }));
 		panel.add(FormaPago);
-		
+
 		JLabel lblNewLabel_1_1_1_1 = new JLabel("Forma de pagamento");
 		lblNewLabel_1_1_1_1.setBounds(88, 347, 151, 24);
 		lblNewLabel_1_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.add(lblNewLabel_1_1_1_1);
-		
+
 		JLabel lblNewLabel_4 = new JLabel("Sistema de Reservas");
 		lblNewLabel_4.setBounds(108, 93, 199, 42);
 		lblNewLabel_4.setForeground(new Color(65, 105, 225));
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 20));
 		panel.add(lblNewLabel_4);
-		
+
 		JButton btnReservar = new JButton("Continuar");
 		btnReservar.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				RegistroHospede hospede = new RegistroHospede();
-				hospede.setVisible(true);
-				dispose();
+
+				if (FormaPago.getSelectedItem().equals("Selecione")) {
+					JOptionPane.showMessageDialog(null, "Selecione uma forma de pagamento!");
+				} else if (FechaE.getDate() == null || FechaS.getDate() == null || Valor.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+				} else {
+					String dCheckin = new SimpleDateFormat("yyyy-MM-dd").format(FechaE.getDate());
+					String dCheckout = new SimpleDateFormat("yyyy-MM-dd").format(FechaS.getDate());
+					String formaPagamento = FormaPago.getSelectedItem().toString();
+					int valor = Integer.parseInt(Valor.getText());
+
+					ReservasController reservasController = new ReservasController();
+					ReservasModelo reservasModelo = new ReservasModelo(dCheckin, dCheckout, formaPagamento, valor);
+					reservasController.salvar(reservasModelo);
+
+					JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
+
+					FechaE.setDate(null);
+					FechaS.setDate(null);
+					Valor.setText("");
+					FormaPago.setSelectedIndex(0);
+
+					RegistroHospede registroHospede = new RegistroHospede();
+					registroHospede.setVisible(true);
+					dispose();
+				}
+
+				// int valor = Integer.parseInt(Valor.getText());
+				// String formaPago = (String) FormaPago.getSelectedItem();
+				/// ReservasModelo reservasModelo = new ReservasModelo(dCheckin, dCheckout);
+				// this.reservasController.salvar(dCheckin, dCheckout);
+
+				// dispose();
+
+				// String sql = new ReservasModel().Reservar(data_checkin, data_chechout,
+				// formaPago, valor);
+				// ConexaoDB.setInformation(sql);
+				// RegistroHospede hospede = new RegistroHospede();
+				// hospede.setVisible(true);
+				// dispose();
 			}
 		});
 		btnReservar.setForeground(Color.WHITE);
 		btnReservar.setBounds(190, 436, 133, 33);
 		btnReservar.setIcon(new ImageIcon(Reservas.class.getResource("/imagens/calendario.png")));
-		btnReservar.setBackground(new Color(65,105,225));
+		btnReservar.setBackground(new Color(65, 105, 225));
 		btnReservar.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.add(btnReservar);
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
 		panel_1.setBounds(399, 0, 491, 502);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
-		
+
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setBounds(0, -16, 500, 539);
 		panel_1.add(lblNewLabel);
 		lblNewLabel.setBackground(Color.WHITE);
 		lblNewLabel.setIcon(new ImageIcon(Reservas.class.getResource("/imagens/reservas-img-2.png")));
-		
+
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(Reservas.class.getResource("/imagens/Ha-100px.png")));
 		lblNewLabel_2.setBounds(15, 6, 104, 107);
 		panel.add(lblNewLabel_2);
 	}
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
+
+	private static void CalcularHospedagem() {
+		try {
+			LocalDateTime dataInicial = LocalDateTime.ofInstant(FechaE.getDate().toInstant(),
+					ZoneId.systemDefault());
+			LocalDateTime dataFinal = LocalDateTime.ofInstant(FechaS.getDate().toInstant(),
+					ZoneId.systemDefault());
+
+			long dias = ChronoUnit.DAYS.between(dataInicial, dataFinal);
+			int totalDias = (int) dias;
+			int valorAPagar = totalDias * 20;
+
+			if (totalDias < 1) {
+				FechaS.setDate(null);
+				FechaE.setDate(null);
+				Valor.setText("");
+				JOptionPane.showMessageDialog(null, "Data de Check In não pode ser maior que Data de Check Out");
+			} else {
+				Valor.setText(Integer.toString(valorAPagar));
 			}
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
+
+		} catch (Exception e) {
+		}
 	}
+
+	// private static void addPopup(Component component, final JPopupMenu popup) {
+	// component.addMouseListener(new MouseAdapter() {
+	// public void mousePressed(MouseEvent e) {
+	// if (e.isPopupTrigger()) {
+	// showMenu(e);
+	// }
+	// }
+
+	// public void mouseReleased(MouseEvent e) {
+	// if (e.isPopupTrigger()) {
+	// showMenu(e);
+	// }
+	// }
+
+	// private void showMenu(MouseEvent e) {
+	// popup.show(e.getComponent(), e.getX(), e.getY());
+	// }
+	// });
+	// }
 }
