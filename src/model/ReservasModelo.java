@@ -2,10 +2,24 @@ package model;
 
 public class ReservasModelo {
 
+    private Integer id;
     private String dataCheckin;
     private String dataCheckout;
     private Integer valor;
     private String formaPagamento;
+
+    public ReservasModelo() {
+
+    }
+
+    public ReservasModelo(String dCheckin, String dCheckout, String formaPagamento, int valor, int id) {
+        super();
+        this.dataCheckin = dCheckin;
+        this.dataCheckout = dCheckout;
+        this.formaPagamento = formaPagamento;
+        this.valor = valor;
+        this.id = id;
+    }
 
     public ReservasModelo(String dCheckin, String dCheckout, String formaPagamento, int valor) {
         super();
@@ -47,33 +61,20 @@ public class ReservasModelo {
         this.formaPagamento = formaPagamento;
     }
 
-    // public Integer getId() {
-    // return id;
-    // }
+    public Integer getId() {
+        return id;
+    }
 
-    // public void setId(Integer id) {
-    // this.id = id;
-    // }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    // public String getNome() {
-    // return nome;
-    // }
-
-    // public String getDescricao() {
-    // return descricao;
-    // }
-
-    // public Integer getCategoriaId() {
-    // return categoriaId;
-    // }
-
-    // public void setCategoriaId(Integer categoriaId) {
-    // this.categoriaId = categoriaId;
-    // }
-
-    // @Override
-    // public String toString() {
-    // return String.format("O produto �: %d, %s, %s", this.id, this.nome,
-    // this.descricao);
-    // }
+    @Override
+    public String toString() {
+        return String.format(
+                "O produto �: %d, %s, %s",
+                this.id,
+                this.dataCheckin,
+                this.dataCheckout);
+    }
 }

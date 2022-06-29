@@ -9,10 +9,8 @@ import model.ReservasModelo;
 
 public class TesteConexao {
     public static void main(String[] args) throws ParseException {
-        // ReservasController reservasController = new ReservasController();
-        // ReservasModelo reservasModelo = new ReservasModelo(dataCheckinDate,
-        // dataCheckoutDate);
-        // reservasController.salvar(reservasModelo);
+        ReservasController reservasController = new ReservasController();
+        reservasController.deletar(2);
     }
 
 }
