@@ -68,13 +68,4 @@ public class ReservasModelo {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "O produto �: %d, %s, %s",
-                this.id,
-                this.dataCheckin,
-                this.dataCheckout);
-    }
 }

@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
@@ -129,25 +130,7 @@ public class Buscar extends JFrame {
 		model.addColumn("FormaPagamento");
 		model.addColumn("Valor");
 		model.addRow(new Object[] { "ID", "Check-in", "Check-out", "F. Pagamento", "Valor" });
-
-		ReservasController reservasController = new ReservasController();
-
-		int incremente = 1;
-
-		try {
-			for (int index = 0; index < incremente; index++) {
-				ReservasModelo list = reservasController.listar().get(index);
-				model.addRow(new Object[] {
-						list.getId(),
-						list.getDataCheckin(),
-						list.getDataCheckout(),
-						list.getFormaPagamento(),
-						list.getValor() });
-				incremente++;
-			}
-		} catch (Exception e) {
-			incremente = 0;
-		}
+		mostarReservas();
 
 		JButton btnDelete = new JButton("");
 		btnDelete.setIcon(new ImageIcon(Buscar.class.getResource("/imagens/deletar.png")));
@@ -171,6 +154,7 @@ public class Buscar extends JFrame {
 		lblNewLabel_2.setBounds(25, 10, 104, 107);
 		contentPane.add(lblNewLabel_2);
 		setResizable(false);
+
 	}
 
 	private void deletar() {
@@ -211,6 +195,19 @@ public class Buscar extends JFrame {
 		} else {
 			JOptionPane.showMessageDialog(this, "Por favor, selecionar o ID");
 		}
+	}
+
+	private void mostarReservas() {
+		ReservasController reservasController = new ReservasController();
+		List<ReservasModelo> reservas = reservasController.listar();
+		reservas.forEach(reserva -> {
+			model.addRow(new Object[] {
+					reserva.getId(),
+					reserva.getDataCheckin(),
+					reserva.getDataCheckout(),
+					reserva.getFormaPagamento(),
+					reserva.getValor() });
+		});
 	}
 
 }

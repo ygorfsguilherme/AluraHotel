@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -120,10 +119,13 @@ public class Reservas extends JFrame {
 		lblNewLabel_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.add(lblNewLabel_1_1_1);
 
-		JComboBox<String> FormaPago = new JComboBox<>();
+		JComboBox<Object> FormaPago = new JComboBox<>();
 		FormaPago.setBounds(88, 373, 235, 33);
 		FormaPago.setFont(new Font("Arial", Font.PLAIN, 14));
-		FormaPago.setModel(new DefaultComboBoxModel(new String[] { "Selecione", "Dinheiro", "Cartão de Crédito",
+		FormaPago.setModel(new DefaultComboBoxModel<Object>(new Object[] {
+				"Selecione",
+				"Dinheiro",
+				"Cartão de Crédito",
 				"Cartão de Débito" }));
 		panel.add(FormaPago);
 
@@ -168,20 +170,6 @@ public class Reservas extends JFrame {
 					registroHospede.setVisible(true);
 					dispose();
 				}
-
-				// int valor = Integer.parseInt(Valor.getText());
-				// String formaPago = (String) FormaPago.getSelectedItem();
-				/// ReservasModelo reservasModelo = new ReservasModelo(dCheckin, dCheckout);
-				// this.reservasController.salvar(dCheckin, dCheckout);
-
-				// dispose();
-
-				// String sql = new ReservasModel().Reservar(data_checkin, data_chechout,
-				// formaPago, valor);
-				// ConexaoDB.setInformation(sql);
-				// RegistroHospede hospede = new RegistroHospede();
-				// hospede.setVisible(true);
-				// dispose();
 			}
 		});
 		btnReservar.setForeground(Color.WHITE);
@@ -232,24 +220,4 @@ public class Reservas extends JFrame {
 		} catch (Exception e) {
 		}
 	}
-
-	// private static void addPopup(Component component, final JPopupMenu popup) {
-	// component.addMouseListener(new MouseAdapter() {
-	// public void mousePressed(MouseEvent e) {
-	// if (e.isPopupTrigger()) {
-	// showMenu(e);
-	// }
-	// }
-
-	// public void mouseReleased(MouseEvent e) {
-	// if (e.isPopupTrigger()) {
-	// showMenu(e);
-	// }
-	// }
-
-	// private void showMenu(MouseEvent e) {
-	// popup.show(e.getComponent(), e.getX(), e.getY());
-	// }
-	// });
-	// }
 }
