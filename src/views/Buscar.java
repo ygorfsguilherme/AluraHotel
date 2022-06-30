@@ -7,7 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import controller.HospedeController;
 import controller.ReservasController;
+import model.HospedeModelo;
 import model.ReservasModelo;
 
 import javax.swing.JTable;
@@ -33,8 +35,10 @@ public class Buscar extends JFrame {
 	private JTextField txtBuscar;
 	private JTable tbHospedes;
 	private ReservasController reservasController = new ReservasController();
+	private HospedeController hospedeController = new HospedeController();
 	private JTable tbReservas;
 	private DefaultTableModel model;
+	private DefaultTableModel modelHospede;
 
 	/**
 	 * Launch the application.
@@ -119,6 +123,18 @@ public class Buscar extends JFrame {
 		tbHospedes.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.addTab("Hóspedes", new ImageIcon(Buscar.class.getResource("/imagens/pessoa.png")), tbHospedes, null);
 
+		modelHospede = (DefaultTableModel) tbHospedes.getModel();
+		modelHospede.addColumn("ID");
+		modelHospede.addColumn("Nome");
+		modelHospede.addColumn("Sobrenome");
+		modelHospede.addColumn("Telefone");
+		modelHospede.addColumn("Data de Nascimento");
+		modelHospede.addColumn("Nacionalidade");
+		modelHospede.addColumn("ID Reserva");
+		modelHospede.addRow(
+				new Object[] { "ID", "Nome", "Sobrenome", "Telefone", "D. Nascimento", "Nacionalidade", "ID Reserva" });
+		mostrarHospede();
+
 		tbReservas = new JTable();
 		tbReservas.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.addTab("Reservas", new ImageIcon(Buscar.class.getResource("/imagens/calendario.png")), tbReservas, null);
@@ -130,7 +146,7 @@ public class Buscar extends JFrame {
 		model.addColumn("FormaPagamento");
 		model.addColumn("Valor");
 		model.addRow(new Object[] { "ID", "Check-in", "Check-out", "F. Pagamento", "Valor" });
-		mostarReservas();
+		mostrarReservas();
 
 		JButton btnDelete = new JButton("");
 		btnDelete.setIcon(new ImageIcon(Buscar.class.getResource("/imagens/deletar.png")));
@@ -160,13 +176,14 @@ public class Buscar extends JFrame {
 	private void deletar() {
 		Object objetoDaLinha = (Object) model.getValueAt(tbReservas.getSelectedRow(),
 				tbReservas.getSelectedColumn());
-		// int id = Integer.parseInt(objetoDaLinha.toString());
 
 		if (objetoDaLinha instanceof Integer) {
 			Integer id = (Integer) objetoDaLinha;
 
 			this.reservasController.deletar(id);
 			model.removeRow(tbReservas.getSelectedRow());
+			modelHospede.setRowCount(1);
+			mostrarHospede();
 			JOptionPane.showMessageDialog(this, "Item excluído com sucesso!");
 		} else {
 			JOptionPane.showMessageDialog(this, "Por favor, selecionar o ID");
@@ -197,7 +214,7 @@ public class Buscar extends JFrame {
 		}
 	}
 
-	private void mostarReservas() {
+	private void mostrarReservas() {
 		ReservasController reservasController = new ReservasController();
 		List<ReservasModelo> reservas = reservasController.listar();
 		reservas.forEach(reserva -> {
@@ -207,6 +224,21 @@ public class Buscar extends JFrame {
 					reserva.getDataCheckout(),
 					reserva.getFormaPagamento(),
 					reserva.getValor() });
+		});
+	}
+
+	private void mostrarHospede() {
+		HospedeController hospedeController = new HospedeController();
+		List<HospedeModelo> hospedes = hospedeController.listar();
+		hospedes.forEach(hospede -> {
+			modelHospede.addRow(new Object[] {
+					hospede.getIdHospede(),
+					hospede.getNome(),
+					hospede.getSobrenome(),
+					hospede.getDataNascimento(),
+					hospede.getNacionalidade(),
+					hospede.getTelefone(),
+					hospede.getIdReservas() });
 		});
 	}
 

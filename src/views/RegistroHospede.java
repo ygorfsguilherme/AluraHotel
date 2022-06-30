@@ -4,21 +4,27 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import javax.swing.JTextField;
 import java.awt.Color;
 import com.toedter.calendar.JDateChooser;
 
+import controller.HospedeController;
 import controller.ReservasController;
+import model.HospedeModelo;
 import model.ReservasModelo;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
@@ -224,8 +230,27 @@ public class RegistroHospede extends JFrame {
 		JButton btnSalvar = new JButton("");
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Sucesso exito = new Sucesso();
-				exito.setVisible(true);
+				try {
+					String DNascimento = new SimpleDateFormat("yyyy-MM-dd").format(txtDataN.getDate());
+
+					HospedeModelo hospedeModelo = new HospedeModelo(
+							txtNome.getText(),
+							txtSobrenome.getText(),
+							DNascimento,
+							ComboNacionalidade.getSelectedItem().toString(),
+							txtTelefone.getText(),
+							Integer.parseInt(txtNreserva.getText()));
+
+					HospedeController hc = new HospedeController();
+					hc.salvar(hospedeModelo);
+					Sucesso exito = new Sucesso();
+					exito.setVisible(true);
+					dispose();
+
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "Erro ao salvar");
+					System.out.println(e1);
+				}
 			}
 		});
 		btnSalvar.setIcon(new ImageIcon(RegistroHospede.class.getResource("/imagens/disquete.png")));
@@ -292,8 +317,13 @@ public class RegistroHospede extends JFrame {
 	private String idReserva() {
 		ReservasController reservasController = new ReservasController();
 		List<ReservasModelo> list = reservasController.listar();
+		int id = list.size() - 1;
 
-		Integer idReserva = list.get(list.size() - 1).getId();
-		return Integer.toString(idReserva);
+		if (id >= 0) {
+			Integer idReserva = list.get(id).getId();
+			return Integer.toString(idReserva);
+		} else {
+			return "";
+		}
 	}
 }

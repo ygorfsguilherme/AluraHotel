@@ -38,6 +38,7 @@ public class Reservas extends JFrame {
 
 	static JDateChooser FechaE = new JDateChooser();
 	static JDateChooser FechaS = new JDateChooser();
+	private JComboBox<Object> FormaPago = new JComboBox<>();
 
 	/**
 	 * Launch the application.
@@ -119,7 +120,6 @@ public class Reservas extends JFrame {
 		lblNewLabel_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.add(lblNewLabel_1_1_1);
 
-		JComboBox<Object> FormaPago = new JComboBox<>();
 		FormaPago.setBounds(88, 373, 235, 33);
 		FormaPago.setFont(new Font("Arial", Font.PLAIN, 14));
 		FormaPago.setModel(new DefaultComboBoxModel<Object>(new Object[] {
@@ -144,32 +144,7 @@ public class Reservas extends JFrame {
 		btnReservar.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-
-				if (FormaPago.getSelectedItem().equals("Selecione")) {
-					JOptionPane.showMessageDialog(null, "Selecione uma forma de pagamento!");
-				} else if (FechaE.getDate() == null || FechaS.getDate() == null || Valor.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-				} else {
-					String dCheckin = new SimpleDateFormat("yyyy-MM-dd").format(FechaE.getDate());
-					String dCheckout = new SimpleDateFormat("yyyy-MM-dd").format(FechaS.getDate());
-					String formaPagamento = FormaPago.getSelectedItem().toString();
-					int valor = Integer.parseInt(Valor.getText());
-
-					ReservasController reservasController = new ReservasController();
-					ReservasModelo reservasModelo = new ReservasModelo(dCheckin, dCheckout, formaPagamento, valor);
-					reservasController.salvar(reservasModelo);
-
-					JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
-
-					FechaE.setDate(null);
-					FechaS.setDate(null);
-					Valor.setText("");
-					FormaPago.setSelectedIndex(0);
-
-					RegistroHospede registroHospede = new RegistroHospede();
-					registroHospede.setVisible(true);
-					dispose();
-				}
+				salvaReserva();
 			}
 		});
 		btnReservar.setForeground(Color.WHITE);
@@ -218,6 +193,37 @@ public class Reservas extends JFrame {
 			}
 
 		} catch (Exception e) {
+		}
+	}
+
+	private void salvaReserva() {
+		if (FormaPago.getSelectedItem().equals("Selecione")) {
+			JOptionPane.showMessageDialog(null, "Selecione uma forma de pagamento!");
+		} else if (FechaE.getDate() == null || FechaS.getDate() == null || Valor.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+		} else {
+			String dCheckin = new SimpleDateFormat("yyyy-MM-dd").format(FechaE.getDate());
+			String dCheckout = new SimpleDateFormat("yyyy-MM-dd").format(FechaS.getDate());
+			String formaPagamento = FormaPago.getSelectedItem().toString();
+			int valor = Integer.parseInt(Valor.getText());
+
+			ReservasModelo reservasModelo = new ReservasModelo(dCheckin,
+					dCheckout,
+					formaPagamento,
+					valor);
+			ReservasController reservasController = new ReservasController();
+			reservasController.salvar(reservasModelo);
+
+			JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
+
+			FechaE.setDate(null);
+			FechaS.setDate(null);
+			Valor.setText("");
+			FormaPago.setSelectedIndex(0);
+
+			RegistroHospede registroHospede = new RegistroHospede();
+			registroHospede.setVisible(true);
+			dispose();
 		}
 	}
 }
