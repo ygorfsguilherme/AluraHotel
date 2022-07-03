@@ -27,4 +27,8 @@ public class HospedeController {
         this.hospedeDAO.deletar(id);
     }
 
+    public void alterar(HospedeModelo hospedeModelo) {
+        this.hospedeDAO.alterar(hospedeModelo);
+    }
+
 }

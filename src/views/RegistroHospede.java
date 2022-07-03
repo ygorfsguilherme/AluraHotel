@@ -12,7 +12,6 @@ import com.toedter.calendar.JDateChooser;
 import controller.HospedeController;
 import controller.ReservasController;
 import model.HospedeModelo;
-import model.ReservasModelo;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -24,7 +23,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
@@ -37,6 +39,10 @@ public class RegistroHospede extends JFrame {
 	private JTextField txtSobrenome;
 	private JTextField txtTelefone;
 	private JTextField txtNreserva;
+	private JDateChooser txtDataN;
+	private Date date;
+	private JComboBox<Object> ComboNacionalidade;
+	private Integer idHospede;
 
 	/**
 	 * Launch the application.
@@ -57,7 +63,19 @@ public class RegistroHospede extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	public RegistroHospede(Integer idHospede, Integer idReserva) {
+		this.idHospede = idHospede;
+		Tela();
+		HospedeCarregar(idHospede, idReserva);
+
+	}
+
 	public RegistroHospede() {
+		Tela();
+		pegaReserva();
+	}
+
+	public void Tela() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegistroHospede.class.getResource("/imagens/pessoa.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 910, 634);
@@ -80,11 +98,11 @@ public class RegistroHospede extends JFrame {
 		txtSobrenome.setBounds(556, 222, 255, 33);
 		contentPane.add(txtSobrenome);
 
-		JDateChooser txtDataN = new JDateChooser();
+		txtDataN = new JDateChooser(null, "yyyy-MM-dd");
 		txtDataN.setBounds(556, 286, 255, 33);
 		contentPane.add(txtDataN);
 
-		JComboBox<Object> ComboNacionalidade = new JComboBox<>();
+		ComboNacionalidade = new JComboBox<>();
 		ComboNacionalidade.setFont(new Font("Arial", Font.PLAIN, 14));
 		ComboNacionalidade.setModel(new DefaultComboBoxModel<Object>(new Object[] { "Afghanistan – Afeganistão",
 				"Afghan – afegão", "Andorra – Andorra", "Andorran – andorrano", "Angola – Angola", "Angolan – angolano",
@@ -230,27 +248,7 @@ public class RegistroHospede extends JFrame {
 		JButton btnSalvar = new JButton("");
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					String DNascimento = new SimpleDateFormat("yyyy-MM-dd").format(txtDataN.getDate());
-
-					HospedeModelo hospedeModelo = new HospedeModelo(
-							txtNome.getText(),
-							txtSobrenome.getText(),
-							DNascimento,
-							ComboNacionalidade.getSelectedItem().toString(),
-							txtTelefone.getText(),
-							Integer.parseInt(txtNreserva.getText()));
-
-					HospedeController hc = new HospedeController();
-					hc.salvar(hospedeModelo);
-					Sucesso exito = new Sucesso();
-					exito.setVisible(true);
-					dispose();
-
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(null, "Erro ao salvar");
-					System.out.println(e1);
-				}
+				salvarOuAlterar(idHospede);
 			}
 		});
 		btnSalvar.setIcon(new ImageIcon(RegistroHospede.class.getResource("/imagens/disquete.png")));
@@ -266,6 +264,7 @@ public class RegistroHospede extends JFrame {
 				dispose();
 			}
 		});
+
 		btnSair.setIcon(new ImageIcon(RegistroHospede.class.getResource("/imagens/encerrar-sessao-32-px.png")));
 		btnSair.setBackground(SystemColor.menu);
 		btnSair.setBounds(828, 543, 54, 41);
@@ -306,24 +305,112 @@ public class RegistroHospede extends JFrame {
 		txtNreserva.setBounds(556, 485, 255, 33);
 		contentPane.add(txtNreserva);
 
-		txtNreserva.setText(idReserva());
-
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(0, 0, 502, 595);
 		contentPane.add(panel);
 	}
 
-	private String idReserva() {
-		ReservasController reservasController = new ReservasController();
-		List<ReservasModelo> list = reservasController.listar();
-		int id = list.size() - 1;
+	public void HospedeCarregar(Integer idHospede, Integer idReserva) {
 
-		if (id >= 0) {
-			Integer idReserva = list.get(id).getId();
-			return Integer.toString(idReserva);
+		txtNreserva.setText(Integer.toString(idReserva));
+
+		HospedeController hospedeController = new HospedeController();
+		List<HospedeModelo> hospedes = hospedeController.listar();
+
+		hospedes.forEach(hospede -> {
+			if (hospede.getIdHospede() == idHospede) {
+				try {
+					date = new SimpleDateFormat("yyyy-MM-dd").parse(hospede.getDataNascimento());
+					System.out.println(hospede.getDataNascimento());
+					txtNome.setText(hospede.getNome());
+					txtSobrenome.setText(hospede.getSobrenome());
+					txtTelefone.setText(hospede.getTelefone());
+					txtDataN.setDate(date);
+					ComboNacionalidade.setSelectedItem(hospede.getNacionalidade());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+			}
+		});
+	}
+
+	private void salvarOuAlterar(Integer id) {
+
+		List<Integer> checkId = new ArrayList<>();
+
+		HospedeController hospedeController = new HospedeController();
+		List<HospedeModelo> hospedes = hospedeController.listar();
+		hospedes.forEach(hospede -> {
+			checkId.add(hospede.getIdHospede());
+		});
+
+		if (checkId.contains(id)) {
+			alterarHospede();
 		} else {
-			return "";
+			adicionarHospede();
 		}
 	}
+
+	private void adicionarHospede() {
+		if (infoHospede() != null) {
+			HospedeController hc = new HospedeController();
+			hc.salvar(infoHospede());
+
+			Sucesso sucesso = new Sucesso();
+			sucesso.setVisible(true);
+
+			dispose();
+
+		} else {
+			JOptionPane.showMessageDialog(null, "Erro ao salvar");
+		}
+	}
+
+	private void alterarHospede() {
+		if (infoHospede() != null) {
+			HospedeController hc = new HospedeController();
+			hc.alterar(infoHospede());
+
+			JOptionPane.showMessageDialog(null, "Hóspede alterado com sucesso");
+
+			Buscar buscar = new Buscar();
+			buscar.setVisible(true);
+
+			dispose();
+
+		} else {
+			JOptionPane.showMessageDialog(null, "Erro ao salvar");
+		}
+	}
+
+	private HospedeModelo infoHospede() {
+		try {
+			String DNascimento = new SimpleDateFormat("yyyy-MM-dd").format(txtDataN.getDate());
+
+			HospedeModelo hospedeModelo = new HospedeModelo(
+					txtNome.getText(),
+					txtSobrenome.getText(),
+					DNascimento,
+					ComboNacionalidade.getSelectedItem().toString(),
+					txtTelefone.getText(),
+					Integer.parseInt(txtNreserva.getText()));
+
+			return hospedeModelo;
+
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(null, "Erro ao salvar");
+			System.out.println(e1);
+		}
+
+		return null;
+	}
+
+	private void pegaReserva() {
+		ReservasController rc = new ReservasController();
+		Integer IdReserva = rc.listar().get(rc.listar().size() - 1).getId();
+		txtNreserva.setText(Integer.toString(IdReserva));
+	}
+
 }

@@ -214,8 +214,6 @@ public class Reservas extends JFrame {
 			ReservasController reservasController = new ReservasController();
 			reservasController.salvar(reservasModelo);
 
-			JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
-
 			FechaE.setDate(null);
 			FechaS.setDate(null);
 			Valor.setText("");

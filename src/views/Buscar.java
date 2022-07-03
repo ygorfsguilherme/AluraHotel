@@ -15,6 +15,7 @@ import model.ReservasModelo;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.print.DocFlavor.STRING;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.SystemColor;
@@ -35,7 +36,7 @@ public class Buscar extends JFrame {
 	private JTextField txtBuscar;
 	private JTable tbHospedes;
 	private ReservasController reservasController = new ReservasController();
-	private HospedeController hospedeController = new HospedeController();
+	// private HospedeController hospedeController = new HospedeController();
 	private JTable tbReservas;
 	private DefaultTableModel model;
 	private DefaultTableModel modelHospede;
@@ -120,6 +121,7 @@ public class Buscar extends JFrame {
 		contentPane.add(panel);
 
 		tbHospedes = new JTable();
+		tbHospedes.setCellEditor(null);
 		tbHospedes.setFont(new Font("Arial", Font.PLAIN, 14));
 		panel.addTab("Hóspedes", new ImageIcon(Buscar.class.getResource("/imagens/pessoa.png")), tbHospedes, null);
 
@@ -174,43 +176,33 @@ public class Buscar extends JFrame {
 	}
 
 	private void deletar() {
-		Object objetoDaLinha = (Object) model.getValueAt(tbReservas.getSelectedRow(),
-				tbReservas.getSelectedColumn());
+		try {
+			Integer idHospedeReserva = (Integer) modelHospede.getValueAt(tbHospedes.getSelectedRow(),
+					tbHospedes.getColumnCount() - 1);
 
-		if (objetoDaLinha instanceof Integer) {
-			Integer id = (Integer) objetoDaLinha;
-
-			this.reservasController.deletar(id);
-			model.removeRow(tbReservas.getSelectedRow());
-			modelHospede.setRowCount(1);
-			mostrarHospede();
+			reservasController.deletar(idHospedeReserva);
+			modelHospede.removeRow(tbHospedes.getSelectedRow());
 			JOptionPane.showMessageDialog(this, "Item excluído com sucesso!");
-		} else {
-			JOptionPane.showMessageDialog(this, "Por favor, selecionar o ID");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Não selecionou nenhum hóspede");
+		} finally {
+			updateTable();
 		}
 	}
 
 	private void alterar() {
-		Object objetoDaLinha = (Object) model.getValueAt(tbReservas.getSelectedRow(),
-				tbReservas.getSelectedColumn());
+		try {
+			Integer idReserva = (Integer) modelHospede.getValueAt(tbHospedes.getSelectedRow(),
+					tbHospedes.getColumnCount() - 1);
+			Integer idHospede = (Integer) modelHospede.getValueAt(tbHospedes.getSelectedRow(),
+					0);
 
-		if (objetoDaLinha instanceof Integer) {
-			Integer id = (Integer) objetoDaLinha;
+			RegistroHospede registroHospede = new RegistroHospede(idHospede, idReserva);
+			registroHospede.setVisible(true);
+			dispose();
 
-			String data_checkin = tbReservas.getValueAt(tbReservas.getSelectedRow(), 1).toString();
-			String data_checkout = tbReservas.getValueAt(tbReservas.getSelectedRow(), 2).toString();
-			String forma_pagamento = tbReservas.getValueAt(tbReservas.getSelectedRow(), 3).toString();
-			String valor_hosp = tbReservas.getValueAt(tbReservas.getSelectedRow(), 4).toString();
-
-			this.reservasController.alterar(data_checkin,
-					data_checkout,
-					forma_pagamento,
-					Integer.parseInt(valor_hosp),
-					id);
-			JOptionPane.showMessageDialog(this, "Item alterado com sucesso!");
-			// model.removeRow(tbReservas.getSelectedRow());
-		} else {
-			JOptionPane.showMessageDialog(this, "Por favor, selecionar o ID");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Por favor, selecionar um hospede");
 		}
 	}
 
@@ -235,11 +227,20 @@ public class Buscar extends JFrame {
 					hospede.getIdHospede(),
 					hospede.getNome(),
 					hospede.getSobrenome(),
+					hospede.getTelefone(),
 					hospede.getDataNascimento(),
 					hospede.getNacionalidade(),
-					hospede.getTelefone(),
 					hospede.getIdReservas() });
 		});
+	}
+
+	private void updateTable() {
+		modelHospede.setRowCount(1);
+		mostrarHospede();
+
+		model.setRowCount(1);
+		mostrarReservas();
+
 	}
 
 }
