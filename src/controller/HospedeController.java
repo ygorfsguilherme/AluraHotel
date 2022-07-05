@@ -31,4 +31,8 @@ public class HospedeController {
         this.hospedeDAO.alterar(hospedeModelo);
     }
 
+    public List<HospedeModelo> buscar(String nome) {
+        return this.hospedeDAO.buscar(nome);
+    }
+
 }

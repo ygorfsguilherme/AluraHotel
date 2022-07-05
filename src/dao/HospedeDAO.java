@@ -36,38 +36,6 @@ public class HospedeDAO {
         }
     }
 
-    public List<HospedeModelo> listar() {
-        List<HospedeModelo> hospede = new ArrayList<>();
-        try {
-            String sql = "SELECT IdHospede, Nome, Sobrenome, DataNascimento, Nacionalidade, Telefone, IdReserva FROM hospedes";
-
-            try (PreparedStatement pstm = connection.prepareStatement(sql)) {
-                pstm.execute();
-
-                ResultSetEmHospede(hospede, pstm);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return hospede;
-    }
-
-    public void ResultSetEmHospede(List<HospedeModelo> hospede, PreparedStatement pstm) throws SQLException {
-        try (ResultSet rst = pstm.getResultSet()) {
-            while (rst.next()) {
-                HospedeModelo hospedeModelo = new HospedeModelo();
-                hospedeModelo.setIdHospede(rst.getInt("IdHospede"));
-                hospedeModelo.setNome(rst.getString("Nome"));
-                hospedeModelo.setSobrenome(rst.getString("Sobrenome"));
-                hospedeModelo.setDataNascimento(rst.getString("DataNascimento"));
-                hospedeModelo.setNacionalidade(rst.getString("Nacionalidade"));
-                hospedeModelo.setTelefone(rst.getString("Telefone"));
-                hospedeModelo.setIdReservas(rst.getInt("IdReserva"));
-                hospede.add(hospedeModelo);
-            }
-        }
-    }
-
     public void deletar(int idHospede) {
         try {
             String sql = "DELETE FROM hospedes WHERE IdHospede = ?";
@@ -99,4 +67,55 @@ public class HospedeDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public List<HospedeModelo> listar() {
+        List<HospedeModelo> hospede = new ArrayList<>();
+        try {
+            String sql = "SELECT IdHospede, Nome, Sobrenome, DataNascimento, Nacionalidade, Telefone, IdReserva FROM hospedes";
+
+            try (PreparedStatement pstm = connection.prepareStatement(sql)) {
+                pstm.execute();
+
+                ResultSetEmHospede(hospede, pstm);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return hospede;
+    }
+
+    public List<HospedeModelo> buscar(String nome) {
+        List<HospedeModelo> hospede = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM hospedes WHERE Nome = ?";
+
+            try (PreparedStatement pstm = connection.prepareStatement(sql)) {
+                pstm.setString(1, nome);
+                pstm.execute();
+
+                ResultSetEmHospede(hospede, pstm);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return hospede;
+    }
+
+    public void ResultSetEmHospede(List<HospedeModelo> hospede, PreparedStatement pstm) throws SQLException {
+        try (ResultSet rst = pstm.getResultSet()) {
+            while (rst.next()) {
+                HospedeModelo hospedeModelo = new HospedeModelo();
+                hospedeModelo.setIdHospede(rst.getInt("IdHospede"));
+                hospedeModelo.setNome(rst.getString("Nome"));
+                hospedeModelo.setSobrenome(rst.getString("Sobrenome"));
+                hospedeModelo.setDataNascimento(rst.getString("DataNascimento"));
+                hospedeModelo.setNacionalidade(rst.getString("Nacionalidade"));
+                hospedeModelo.setTelefone(rst.getString("Telefone"));
+                hospedeModelo.setIdReservas(rst.getInt("IdReserva"));
+                hospede.add(hospedeModelo);
+            }
+        }
+    }
+
 }

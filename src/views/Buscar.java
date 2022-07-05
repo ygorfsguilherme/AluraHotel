@@ -15,7 +15,6 @@ import model.ReservasModelo;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.print.DocFlavor.STRING;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.SystemColor;
@@ -78,6 +77,8 @@ public class Buscar extends JFrame {
 		JButton btnBuscar = new JButton("");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String nome = txtBuscar.getText();
+				buscarHospede(nome);
 			}
 		});
 		btnBuscar.setBackground(Color.WHITE);
@@ -166,6 +167,11 @@ public class Buscar extends JFrame {
 		btnCancelar.setBackground(SystemColor.menu);
 		btnCancelar.setBounds(713, 416, 54, 41);
 		contentPane.add(btnCancelar);
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateTable();
+			}
+		});
 
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(Buscar.class.getResource("/imagens/Ha-100px.png")));
@@ -222,6 +228,22 @@ public class Buscar extends JFrame {
 	private void mostrarHospede() {
 		HospedeController hospedeController = new HospedeController();
 		List<HospedeModelo> hospedes = hospedeController.listar();
+		hospedes.forEach(hospede -> {
+			modelHospede.addRow(new Object[] {
+					hospede.getIdHospede(),
+					hospede.getNome(),
+					hospede.getSobrenome(),
+					hospede.getTelefone(),
+					hospede.getDataNascimento(),
+					hospede.getNacionalidade(),
+					hospede.getIdReservas() });
+		});
+	}
+
+	private void buscarHospede(String nome) {
+		modelHospede.setRowCount(1);
+		HospedeController hospedeController = new HospedeController();
+		List<HospedeModelo> hospedes = hospedeController.buscar(nome);
 		hospedes.forEach(hospede -> {
 			modelHospede.addRow(new Object[] {
 					hospede.getIdHospede(),
