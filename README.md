@@ -4,7 +4,7 @@ Alura Hotel é um aplicação para gerenciar cadastro, para hospedagem de client
 
 ## Ferramentas Utilizadas
 
-Sua criação foi em java utilizando a biblioteca swing para interface grafica e disponibilizada pela alura (link codigo da GUI)[https://github.com/alura-challenges/challenge-one-alura-hotel-br]
+Sua criação foi em java utilizando a biblioteca swing para interface grafica e disponibilizada pela alura [link codigo da GUI](https://github.com/alura-challenges/challenge-one-alura-hotel-br)
 
 Java
 Mysql
