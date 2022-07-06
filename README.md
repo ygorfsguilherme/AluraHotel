@@ -6,13 +6,10 @@ Alura Hotel é um aplicação para gerenciar cadastro, para hospedagem de client
 
 Sua criação foi em java utilizando a biblioteca swing para interface grafica e disponibilizada pela alura [link codigo da GUI](https://github.com/alura-challenges/challenge-one-alura-hotel-br)
 
-Java
-
-Mysql
-
-Biblioteca JCalendar
-
-Biblioteca C3P0
+<li>Java<li/>
+<li>Mysql<li/>
+<li>Biblioteca JCalendar<li/>
+<li>Biblioteca C3P0<li/>
 
 ## Objetivo
 
@@ -20,10 +17,8 @@ Meu objetivo era criar a parte lógica e conectar a aplicação com o banco de d
 
 Criei metodos para fazer requisição ao banco de dados, requisições essas de pega informações, adicionar, remover e atualizar. Toda a ação que for feita na GUI será reflitido no banco de dados.
 
-![Tela Inicial](image/inicial.png)
-![Tela Login](image/login.png)
-
-<img align="center" src="image/login.png"/>
+<img style="width:908px" src="image/inicial.png"/>
+<img style="width:908px" src="image/login.png"/>
 
 ![Tela Menu de Usuario](image/menuUsuario.png)
 ![Tela Informação](image/telaInformacao.png)
