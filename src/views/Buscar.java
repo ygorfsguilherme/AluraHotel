@@ -228,22 +228,17 @@ public class Buscar extends JFrame {
 	private void mostrarHospede() {
 		HospedeController hospedeController = new HospedeController();
 		List<HospedeModelo> hospedes = hospedeController.listar();
-		hospedes.forEach(hospede -> {
-			modelHospede.addRow(new Object[] {
-					hospede.getIdHospede(),
-					hospede.getNome(),
-					hospede.getSobrenome(),
-					hospede.getTelefone(),
-					hospede.getDataNascimento(),
-					hospede.getNacionalidade(),
-					hospede.getIdReservas() });
-		});
+		getHospedeInformation(hospedes);
 	}
 
 	private void buscarHospede(String nome) {
 		modelHospede.setRowCount(1);
 		HospedeController hospedeController = new HospedeController();
 		List<HospedeModelo> hospedes = hospedeController.buscar(nome);
+		getHospedeInformation(hospedes);
+	}
+
+	private void getHospedeInformation(List<HospedeModelo> hospedes) {
 		hospedes.forEach(hospede -> {
 			modelHospede.addRow(new Object[] {
 					hospede.getIdHospede(),
